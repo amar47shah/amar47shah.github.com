@@ -22,6 +22,10 @@ dependencies:
     - cd _site/ && git checkout master
     - stack exec blog build
 
+test:
+  override:
+    - stack test
+
 deployment:
   production:
     branch: hakyll
