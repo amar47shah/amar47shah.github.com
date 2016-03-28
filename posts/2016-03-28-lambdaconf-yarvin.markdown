@@ -72,16 +72,16 @@ For many days after receiving the email I didn't even notice that:
 
 The first point was frustrating, for sure. In De Goes' liberal formulation of
 a conference governed by "neutral" and impersonal rules, he asked us to choose
-between meager alternatives: Did we prefer a code-of-conduct covering only
-behavior at the conference? Or one requiring all conference-goers to adhere to
-some set of personal beliefs? How about a code-of-conduct that applied to all
-behavior, everywhere and all the time? De Goes had resigned himself into a narrow
+between meager alternatives: Did we prefer a code of conduct that covers only
+behavior at the conference? Or one that requires all conference-goers to adhere to
+some set of personal beliefs? How about a code of conduct that applies to all
+behavior, everywhere and all the time? De Goes had resigned himself to a narrow
 set of unappealing choices, and we had to type furiously in little boxes to
 present the __possibility__ of seeing the issue another way.
 
 But the second point is damning. LambdaConf believes that it is fair
 for speakers to contribute unpaid labor to resolve the problem of Yarvin's
-inclusion--a problem that results from Yarvin's many egregious public writings.
+inclusion -- a problem that results from Yarvin's many egregious public writings.
 So who did LambdaConf appoint to contribute this labor? Only the people whom
 Yarvin has made a pastime of attacking.
 
@@ -106,10 +106,10 @@ make-or-break last-ditch job interview. The same day, apparently, that
 
 What was worse was that __I couldn't tell anyone about it__, least of all anyone
 who could help. De Goes asked for confidentiality; as a trustworthy person
-acting in good faith I felt that I had to respect his request. But I desperately
+acting in good faith, I felt that I had to respect his request. But I desperately
 wanted and needed help. I had many ideas knocking around in my head, some of
 them very sympathetic to De Goes. LambdaConf wanted the honest feedback
-from women and minority speakers, but why assume that each of use would
+of women and minority speakers, but why assume that each of use would
 provide our best thinking in a vacuum? I wished that I could at least confer
 with others who had received the email. As a newcomer to this community,
 I had no idea where to turn.
@@ -160,7 +160,7 @@ decision.__ But if you're curious why I would even consider speaking, let me exp
 
 I'm brand-new to functional programming. Hell, if you count by years in the
 industry you'll see that I'm almost brand-new to software development. I don't
-live in a "tech city". Far from it. I don't work for a company with a conference
+live in a "tech city." Far from it. I don't work for a company with a conference
 budget. Since functional programming isn't part of our tech stack at work, I
 receive no support from my employer to attend an FP conference
 __even if I am speaking at it__. I turned down an enthusiastic invitation to
