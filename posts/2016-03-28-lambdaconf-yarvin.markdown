@@ -87,7 +87,7 @@ Yarvin has made a pastime of attacking.
 
 This isn't hyperbole. No other speaker has made the choices that Yarvin has.
 No other speaker has __chosen__ to author reams of racist diatribes. No other
-speaker is in Yarvin's position; us normal folks--we're good with just having
+speaker is in Yarvin's position; us normal folks -- we're good with just having
 our proposals read and judged on merit. We don't need special consideration
 because we haven't spent our free waking hours advocating for slavery. __Instead
 of holding Yarvin accountable for his personal choices__, LambdaConf chose
@@ -192,7 +192,7 @@ But then, what about others like me? I know at least one other person who
 deeply opposes Yarvin, but will attend LambdaConf 2016. Can I bear to leave
 them there alone, when I could be there to stand with them?
 
-There's only one thing I know for sure; the joy I felt at being selected to
+There's only one thing I know for sure: the joy I felt at being selected to
 speak at LambdaConf has entirely dissipated. If I'm there, I expect to feel
 like I'm there because I need to be, not because I want to be.
 
