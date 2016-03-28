@@ -109,7 +109,7 @@ who could help. De Goes asked for confidentiality; as a trustworthy person
 acting in good faith, I felt that I had to respect his request. But I desperately
 wanted and needed help. I had many ideas knocking around in my head, some of
 them very sympathetic to De Goes. LambdaConf wanted the honest feedback
-of women and minority speakers, but why assume that each of use would
+of women and minority speakers, but why assume that each of us would
 provide our best thinking in a vacuum? I wished that I could at least confer
 with others who had received the email. As a newcomer to this community,
 I had no idea where to turn.
