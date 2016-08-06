@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>amar47shah - Point-Free or Die: Part 1</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">amar47shah</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Point-Free or Die: Part 1</h1>
+
+            <div class="info">
+    Posted on August  6, 2016
+    
+</div>
+
+<p><em>This is the first post in a series about</em> tacit programming <em>and</em> point-free syntax <em>in Haskell and other languages.</em></p>
+<p>For an initial understanding of <a href="https://en.wikipedia.org/wiki/Tacit_programming">tacit programming</a>, consider that a synonym for <em>tacit</em> is <em>quiet</em> and an antonym is <em>noisy</em>. Code is noisy when it contains more information than we need to see. Code is quiet when it doesn’t.</p>
+<p>One way of producing tacit code is to write function definitions in a <em>point-free style</em>. A point-free function definition is tacit because it tells you about the function without mentioning one or more of its arguments. Here’s an example:</p>
+<p>A point-ful definition:</p>
+<pre><code>lengths ls = map length ls</code></pre>
+<p>A point-free definition:</p>
+<pre><code>lengths = map lengths</code></pre>
+<p>These definitions are semantically equivalent; the only difference is the syntax. In fact, this is the type of the function defined by either of them.</p>
+<pre><code>lengths :: Foldable t =&gt; [t a] -&gt; [Int]</code></pre>
+<p>In other words, <code>lengths</code> receives a foldable structure containing some generic type and returns a list of <code>Int</code>.</p>
+<p>The point-ful and point-free definitions mean the same thing, but they communicate differently.</p>
+<p>You could read the first definition as:</p>
+<blockquote>
+<p><code>lengths</code> is a function that maps <code>length</code> over a foldable structure.</p>
+</blockquote>
+<p>You could read the second as:</p>
+<blockquote>
+<p><code>lengths</code> maps <code>length</code>.</p>
+</blockquote>
+<p>Consider the succinctness of the second version. It’s shorter and quicker to say, but understanding it requires that you know what <code>map</code> does.</p>
+<h2 id="calibrating-abstraction">Calibrating Abstraction</h2>
+<p>Here’s another example:</p>
+<pre><code>sum xs = foldr (+) 0 xs</code></pre>
+<p>“<code>sum</code> is a function that iterates over <code>xs</code> to add up its elements, starting from zero and proceeding from right to left.” Or you could say:</p>
+<pre><code>sum    = foldr (+) 0</code></pre>
+<p>“<code>sum</code> is a right-fold of addition starting from zero.”</p>
+<p>Both define the same function. But when we leave out the <code>xs</code>, we communicate at a higher level of abstraction. <strong>We are no longer talking about what <code>sum</code> does, but what it is:</strong> a fold with certain properties.</p>
+<p>Let’s combine these two functions to make a new one:</p>
+<pre><code>totalNumber ls = foldr (+) 0 (map length ls)</code></pre>
+<p>By substituting in our definitions for <code>sum</code> and <code>lengths</code>, we get</p>
+<pre><code>totalNumber ls = sum (lengths ls)</code></pre>
+<p>And of course, we can make this look a little more like Haskell by using <code>$</code>.</p>
+<pre><code>totalNumber ls = sum $ lengths ls</code></pre>
+<p>You could say it’s quieter with the <code>$</code>, but it’s not point-free yet. <code>totalNumber</code> is defined in relation to its argument <code>ls</code>: “<code>totalNumber</code> receives a list of foldable structures and returns the <code>sum</code> of the <code>lengths</code> of those structures.”</p>
+<p>But then, you could also just say, “<code>totalNumber</code> is the <strong>composition</strong> of <code>sum</code> and <code>lengths</code>.” How do we get there?</p>
+<pre><code>totalNumber ls =        sum $ lengths ls
+totalNumber ls =        sum . lengths $ ls
+totalNumber    = \ls -&gt; sum . lengths $ ls
+totalNumber    =        sum . lengths</code></pre>
+<p>This is the process of <strong>eta-reduction</strong>: converting a point-ful definition to a point-free one. Here it takes three steps:</p>
+<ol style="list-style-type: decimal">
+<li>First, we notice that applying <code>sum</code> to <code>lengths ls</code> is equivalent to applying the composition <code>sum . lengths</code> directly to <code>ls</code>.</li>
+<li>Next, we consider that <code>totalNumber</code> is a function that receives <code>ls</code> and simply applies an expression to it.</li>
+<li>Finally, we drop the unnecessary lambda, removing <code>ls</code> from the definition.</li>
+</ol>
+<p>Eta-reduction, also called <a href="https://en.wikipedia.org/wiki/Lambda_calculus#.CE.B7-conversion">eta-conversion</a> is a simply mechanical process–which means computers can do it!</p>
+<p>In fact, you don’t have to do any of your eta-reduction yourself. Haskell’s <a href="https://github.com/bmillwood/pointfree"><code>pointfree</code></a> library can do it for you!</p>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>
