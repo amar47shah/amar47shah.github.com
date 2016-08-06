@@ -1,5 +1,5 @@
 ---
-title: Point-Free or Die: Part 1
+title: 'Point-Free or Die: Part 1'
 ---
 
 _This is the first post in a series about_ tacit programming _and_ point-free
