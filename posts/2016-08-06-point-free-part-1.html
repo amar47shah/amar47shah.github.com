@@ -34,7 +34,7 @@
 <p>Here is an example of a point-ful definition and its point-free equivalent:</p>
 <pre><code>lengths ls = map length ls
 
-lengths = map lengths</code></pre>
+lengths = map length</code></pre>
 <p>They mean the same thing. Both definitions have this type:</p>
 <pre><code>lengths :: Foldable t =&gt; [t a] -&gt; [Int]</code></pre>
 <p>In other words, <code>lengths</code> receives a list of foldable structures containing values of some generic type and returns a list of <code>Int</code>. That, is the list of lengths.</p>
