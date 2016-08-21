@@ -20,7 +20,7 @@ Here is an example of a point-ful definition and its point-free equivalent:
 
     lengths ls = map length ls
 
-    lengths = map lengths
+    lengths = map length
 
 They mean the same thing. Both definitions have this type:
 
