@@ -11,41 +11,32 @@ Code is noisy when it contains more information than we need to see.
 It's quiet...when it doesn't.
 
 One way of producing tacit code is to write function definitions in a **point-free**
-style.
-
-As opposed to a **point-ful** definition, a point-free definition is tacit
+style. As opposed to a **point-ful** definition, a point-free definition is tacit
 because it tells you about the function without mentioning one or more of its arguments.
 
-Here is an example of a point-ful definition:
+---
+
+Here is an example of a point-ful definition and its point-free equivalent:
 
     lengths ls = map length ls
 
-Here is its point-free equivalent:
-
     lengths = map lengths
 
-These definitions are semantically equivalent; the only difference is the syntax.
-
-Both of them have this type:
+They mean the same thing. Both definitions have this type:
 
     lengths :: Foldable t => [t a] -> [Int]
 
 In other words, `lengths` receives a list of foldable structures containing values
-of some generic type and returns a list of `Int`.
+of some generic type and returns a list of `Int`. That, is the list of lengths.
 
-The point-ful and point-free definitions mean the same thing, but they
-communicate differently.
-
-You could read the first definition as:
+With differing syntax, the point-ful and point-free definitions communicate differently:
 
 "`lengths` is a function that maps each foldable structure in a list to its `length`."
 
-You could read the second as:
-
-"`lengths` is a map of `length`."
+vs. "`lengths` is a map of `length`."
 
 Consider the succinctness of the second version. It's shorter and quicker to say,
-but understanding it requires that you how `map` acts on the elements of a list.
+but understanding it requires that you know how `map` acts on the elements of a list.
 
 ## Calibrating Abstraction
 
@@ -62,11 +53,11 @@ Or you could say:
 
 "`sum` is a right-fold of addition starting from zero."
 
-Both define the same function. But when we leave out the `xs`, we communicate
-at a higher level of abstraction.
-
+When we leave out the `xs`, we communicate at a higher level of abstraction.
 **We are no longer talking about what `sum` does, but what it is:**
 a fold with certain properties.
+
+---
 
 Let's combine these two functions to make a new one:
 
