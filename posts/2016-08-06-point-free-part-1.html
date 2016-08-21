@@ -29,22 +29,19 @@
 
 <p><em>This is the first post in a series about <strong>tacit programming</strong> and <strong>point-free</strong> syntax in Haskell and other languages.</em></p>
 <p>For an initial understanding of <a href="https://en.wikipedia.org/wiki/Tacit_programming">tacit programming</a>, consider that a synonym for tacit is <strong>quiet</strong> and an antonym is <strong>noisy</strong>. Code is noisy when it contains more information than we need to see. It’s quiet…when it doesn’t.</p>
-<p>One way of producing tacit code is to write function definitions in a <strong>point-free</strong> style.</p>
-<p>As opposed to a <strong>point-ful</strong> definition, a point-free definition is tacit because it tells you about the function without mentioning one or more of its arguments.</p>
-<p>Here is an example of a point-ful definition:</p>
-<pre><code>lengths ls = map length ls</code></pre>
-<p>Here is its point-free equivalent:</p>
-<pre><code>lengths = map lengths</code></pre>
-<p>These definitions are semantically equivalent; the only difference is the syntax.</p>
-<p>Both of them have this type:</p>
+<p>One way of producing tacit code is to write function definitions in a <strong>point-free</strong> style. As opposed to a <strong>point-ful</strong> definition, a point-free definition is tacit because it tells you about the function without mentioning one or more of its arguments.</p>
+<hr />
+<p>Here is an example of a point-ful definition and its point-free equivalent:</p>
+<pre><code>lengths ls = map length ls
+
+lengths = map lengths</code></pre>
+<p>They mean the same thing. Both definitions have this type:</p>
 <pre><code>lengths :: Foldable t =&gt; [t a] -&gt; [Int]</code></pre>
-<p>In other words, <code>lengths</code> receives a list of foldable structures containing values of some generic type and returns a list of <code>Int</code>.</p>
-<p>The point-ful and point-free definitions mean the same thing, but they communicate differently.</p>
-<p>You could read the first definition as:</p>
+<p>In other words, <code>lengths</code> receives a list of foldable structures containing values of some generic type and returns a list of <code>Int</code>. That, is the list of lengths.</p>
+<p>With differing syntax, the point-ful and point-free definitions communicate differently:</p>
 <p>“<code>lengths</code> is a function that maps each foldable structure in a list to its <code>length</code>.”</p>
-<p>You could read the second as:</p>
-<p>“<code>lengths</code> is a map of <code>length</code>.”</p>
-<p>Consider the succinctness of the second version. It’s shorter and quicker to say, but understanding it requires that you how <code>map</code> acts on the elements of a list.</p>
+<p>vs. “<code>lengths</code> is a map of <code>length</code>.”</p>
+<p>Consider the succinctness of the second version. It’s shorter and quicker to say, but understanding it requires that you know how <code>map</code> acts on the elements of a list.</p>
 <h2 id="calibrating-abstraction">Calibrating Abstraction</h2>
 <p>Here’s another example:</p>
 <pre><code>sum xs = foldr (+) 0 xs</code></pre>
@@ -52,8 +49,8 @@
 <p>Or you could say:</p>
 <pre><code>sum = foldr (+) 0</code></pre>
 <p>“<code>sum</code> is a right-fold of addition starting from zero.”</p>
-<p>Both define the same function. But when we leave out the <code>xs</code>, we communicate at a higher level of abstraction.</p>
-<p><strong>We are no longer talking about what <code>sum</code> does, but what it is:</strong> a fold with certain properties.</p>
+<p>When we leave out the <code>xs</code>, we communicate at a higher level of abstraction. <strong>We are no longer talking about what <code>sum</code> does, but what it is:</strong> a fold with certain properties.</p>
+<hr />
 <p>Let’s combine these two functions to make a new one:</p>
 <pre><code>totalNumber ls = foldr (+) 0 (map length ls)</code></pre>
 <p>By substituting in our definitions for <code>sum</code> and <code>lengths</code>, we get</p>
