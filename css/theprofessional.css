@@ -26,8 +26,8 @@ body {
   color:#444;
 }
 
-h1, h2, h3, h4, h5, h6, p, pre, blockquote, label, ul, ol, dl, fieldset, address { margin:1em 0; }
-li, dd { margin-left:5%; }
+h1, h2, h3, h4, h5, h6, p, pre, label, ul, ol, dl, fieldset, address { margin:1em 0; }
+blockquote, li, dd { margin-left:5%; }
 fieldset { padding: .5em; }
 select option{ padding:0 5px; }
 select, option { color:black; }
