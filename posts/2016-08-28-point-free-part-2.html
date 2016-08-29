@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>amar47shah - Point-Free or Die, Part 2: Wholemeal Programming</title>
+        <link rel="stylesheet" type="text/css" href="../css/theprofessional.css" />
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">amar47shah</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Point-Free or Die, Part 2: Wholemeal Programming</h1>
+
+            <div class="info">
+    Posted on August 28, 2016
+    
+</div>
+
+<p><em>This is the second post in a series about <strong>tacit programming</strong> and <strong>point-free</strong> syntax in Haskell and other languages. Be sure to check out <a href="../posts/2016-08-06-point-free-part-1.html">Part 1</a>!</em></p>
+<p>We left off in <a href="../posts/2016-08-06-point-free-part-1.html">Part 1</a> having built three functions: <code>lengths</code>, <code>sum</code>, and <code>totalNumber</code>. Here are their point-free definitions:</p>
+<pre><code>lengths :: Foldable t =&gt; [t a] -&gt; [Int]
+lengths = map length
+
+sum :: (Num a, Foldable t) =&gt; t a -&gt; a
+sum = foldr (+) 0
+
+totalNumber :: Foldable t =&gt; [t a] -&gt; Int
+totalNumber = sum . lengths</code></pre>
+<p>Notes on types:</p>
+<ol style="list-style-type: decimal">
+<li><code>lengths</code> returns a list of <code>Int</code>.</li>
+<li><code>Int</code> is a numeric type, because it implements the <code>Num</code> typeclass.</li>
+<li>Lists are <code>Foldable</code> containers.</li>
+<li><code>lengths</code> returns <code>[Int]</code>, a foldable container of values of a numeric type.</li>
+<li><code>sum</code> receives a foldable container of values of a numeric type.</li>
+<li>Therefore, <code>sum</code> can receive the output of <code>lengths</code>.</li>
+</ol>
+<p>Moreover,</p>
+<ol style="list-style-type: decimal">
+<li><code>totalNumber</code> receives the same type of input as <code>lengths</code>.</li>
+<li><code>totalNumber</code> returns an <code>Int</code>, which is a type that <code>sum</code> can return.</li>
+</ol>
+<p>All of this is exactly as it should be, since <code>totalNumber</code> is a <strong>composition</strong> of <code>sum</code> and <code>lengths</code>. Composition, that little dot, is a function, too:</p>
+<pre><code>(.) :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+(.) = \f g x -&gt; f (g x)</code></pre>
+<p>The <code>.</code> operator is a <strong>combinator</strong>, a lambda expression that references no variables other than its own arguments. You can imagine that <code>.</code> takes two functions and lines them up in a pipe that goes from <em>right to left</em>.</p>
+<p><code>totalNumber</code> is a pipe that <strong>transforms</strong> a list of foldable containers into a single integer. When we describe it as a composition, we don’t have to explicitly walk through each “phase” of the transformation. We can be <strong>tacit</strong> about all that.</p>
+<hr />
+<p>In my mind, there are a couple of problems with <code>totalNumber</code>:</p>
+<p>First, <code>sum . lengths</code> is self-explanatory: it’s the <em>sum of lengths</em>. Renaming it to <code>totalNumber</code> doesn’t add much value. I could just opt to use the whole expression whenever I need a sum of lengths. And that could make for clearer code, since there would be no need to look up the definition of <code>totalNumber</code>.</p>
+<p>Second, <code>totalNumber</code> is oddly specific. If our data is a list of containers, the total number of items is <em>just one of many</em> ways to summarize it.</p>
+<p>It would be great if we knew something more general about the many ways to summarize a list of containers of items. Then we could derive more specific transformations, like <code>totalNumber</code>, as we needed them.</p>
+<p>For instance, we could have functions like these</p>
+<ul>
+<li><code>totalMatch</code>: the sum of the numbers of <em>items that fulfill some requirement</em> in each container.</li>
+<li><code>totalMode</code>: the sum of the numbers of <em>occurrences of the most common item</em> in each container.</li>
+<li><code>totalMax</code>: if the contained items are themselves numbers, the sum of the <em>maximum values</em> in each container.</li>
+</ul>
+<h2 id="wholemeal-programming">Wholemeal Programming</h2>
+<p>Something I love about functional programming is that it encourages you to think about how problems can be generalized. This directly contradicts my experiences with object-oriented programming, where YAGNI–You Ain’t Gonna Need It–is a watchword.</p>
+<p>Many times, I’ve ripped out Ruby code that was prematurely generalized to handle never-used cases that complicated the implementation. With pure functions, immutable data, and <a href="http://akgupta.ca/blog/2013/05/14/so-you-still-dont-understand-hindley-milner/">Hindley-Milner parametric polymorphism</a>, Haskell can provide general solutions that are often <em>no more complicated</em> than a specialized solution. Instead of tailoring your code to fit all the circumstances you can imagine, you broaden it so that it can always operate wherever the <em>essential</em> circumstance appears.</p>
+<p>This is called <a href="http://www.cs.ox.ac.uk/ralf.hinze/publications/ICFP09.pdf">wholemeal programming</a>. Ralf Hinze writes:</p>
+<blockquote>
+<p>Wholemeal programming means to think big: work with an entire list, rather than a sequence of elements; develop a solution space, rather than an individual solution; imagine a graph, rather than a single path. The wholemeal approach often offers new insights or provides new perspectives on a given problem. It is nicely complemented by the idea of projective programming: first solve a more general problem, then extract the interesting bits and pieces by transforming the general program into more specialised ones.</p>
+</blockquote>
+<p>Let’s return to our overly specialized function, <code>totalNumber</code>. What’s the general problem we’re trying to solve? Considering the potential uses we brainstormed for a generalized “adding-up” function, perhaps we could put it this way:</p>
+<blockquote>
+<p>We want to add up <em>some metric</em> derived from each container’s items.</p>
+</blockquote>
+<p>In the case of <code>totalNumber</code>, that metric is the <code>length</code>. Therefore, we can replace our old definition,</p>
+<pre><code>totalNumber = sum . lengths</code></pre>
+<p>which we could have written,</p>
+<pre><code>totalNumber = sum . map length</code></pre>
+<p>with a new one:</p>
+<pre><code>totalNumber = aggregate length
+        where aggregate f = sum . map f</code></pre>
+<p><code>aggregate</code> abstracts the idea of <em>measuring each container and adding up the results</em>. To use it elsewhere, let’s promote its scope. It’s good practice to write out its type as well.</p>
+<pre><code>aggregate :: Num c =&gt; (a -&gt; c) -&gt; [a] -&gt; c
+aggregate f = sum . map f</code></pre>
+<p>And we might say:</p>
+<blockquote>
+<p><code>aggregate</code> is a composition of <code>sum</code> with a mapping of some function <code>f</code>.</p>
+</blockquote>
+<p>We’re calling the argument <code>f</code> to indicate that it’s a function. As you can see, <code>f</code> has the type <code>a -&gt; c</code>. It receives a value of type <code>a</code> and returns a value of <code>c</code>, a numeric type.</p>
+<p><code>aggregate</code> receives a function of type <code>a -&gt; c</code> <em>and then</em> a list of <code>a</code>, returning a single numeric <code>c</code>.</p>
+<p>Whereas <code>totalNumber</code> only understands <code>length</code>, <code>aggregate</code> is generalized to work with any metric!</p>
+<h2 id="projective-programming">Projective Programming</h2>
+<p>We have a general solution. Let’s project it onto a specialized problem:</p>
+<blockquote>
+<p>the sum of the maximum values in each container</p>
+</blockquote>
+<p>Haskell’s <code>Prelude</code> gives us <code>maximum</code>:</p>
+<pre><code>Prelude&gt; :t maximum
+maximum :: (Ord a, Foldable t) =&gt; t a -&gt; a
+Prelude&gt; maximum [4,6,9,2,-3,2,0]
+9</code></pre>
+<p>so how should we get the sum of maximum values of sublists in this list:</p>
+<pre><code>totalMax [[6,-1,3], [-2,-1,-4], [1,1,1], [9,10,11]]</code></pre>
+<p>You guessed it. We’ll use <code>aggregate</code>:</p>
+<pre><code>totalMax :: (Num c, Ord c, Foldable t) =&gt; [t c] -&gt; c
+totalMax = aggregate maximum</code></pre>
+<p>And yes, that’s a point-free definition. What does <code>totalMax</code> do?</p>
+<blockquote>
+<p><code>totalMax</code> aggregates <code>maximum</code>.</p>
+</blockquote>
+<p>But we can also write <code>totalMax</code> in a point-ful way:</p>
+<pre><code>totalMax cs = aggregate maximum cs</code></pre>
+<p>That is, we can write it in a way that communicates at a lower level:</p>
+<blockquote>
+<p><code>totalMax</code> takes a list of containers and outputs the sum of their max values</p>
+</blockquote>
+<h2 id="one-last-look">One Last Look</h2>
+<p>Earlier, I said that <code>aggregate</code> receives <em>two inputs</em>: a function that measures a container, and also a list of containers. But in our definition, we didn’t mention the second input. Our definition isn’t point-free <em>or</em> point-ful–it’s somewhere in between:</p>
+<pre><code>aggregate :: Num c =&gt; (a -&gt; c) -&gt; [a] -&gt; c
+aggregate f = sum . map f</code></pre>
+<p>The first input, the measuring function <code>f</code>, is explicitly mentioned. The other input, the list of containers, is tacitly left out.</p>
+<p>What would the same definition look like if both inputs were made explicit? Let’s apply some <strong>eta-abstraction</strong>, the <a href="https://wiki.haskell.org/Eta_conversion">opposite of eta-reduction</a> to find out:</p>
+<pre><code>aggregate f = \cs -&gt; (sum . map f) cs</code></pre>
+<p>That looks a bit complicated, so let’s simplify a bit:</p>
+<pre><code>aggregate f = \cs -&gt; sum ((map f) cs)
+aggregate f = \cs -&gt; sum (map f cs)
+aggregate f cs = sum (map f cs)</code></pre>
+<p>Or, if we want to use <code>$</code>:</p>
+<pre><code>aggregate f cs = sum $ map f cs</code></pre>
+<p>What’s that say, in plain English?</p>
+<blockquote>
+<p><code>aggregate</code> receives a function and a list of containers, maps that function over the containers, and returns the result of adding up the outputs.</p>
+</blockquote>
+<p>We have a point-ful definition of <code>aggregate</code>. Could we have a point-free one too? Let’s eta-reduce!</p>
+<pre><code>aggregate f = sum . map f
+aggregate f = (.) sum (map f)
+aggregate f = (.) sum $ map f
+aggregate f = (.) sum . map $ f
+aggregate = \f -&gt; (.) sum . map $ f
+aggregate = (.) sum . map
+aggregate = (sum .) . map</code></pre>
+<p>Well, that’s clear enough! How do we even <em>read</em> <code>(sum .) . map</code>?</p>
+<p><code>aggregate</code> is somehow a combination of <code>sum</code> and <code>map</code>. We don’t have the words just yet to describe the nature of that combination, but let’s have a closer look.</p>
+<p>We can define a combinator to represent the abstraction <code>(f .) . g</code>:</p>
+<pre><code>oo :: (c -&gt; d) -&gt; (a -&gt; b -&gt; c) -&gt; a -&gt; b -&gt; d
+oo = \f g -&gt; (f .) . g</code></pre>
+<p>With Haskell’s <a href="https://wiki.haskell.org/Infix_operator">infix backticks</a>, we can write:</p>
+<pre><code>aggregate = sum `oo` map</code></pre>
+<p>But what is this <code>oo</code>? Let’s eta-abstract:</p>
+<pre><code>oo = \f g -&gt; (f .) . g
+oo = \f g x -&gt; (f .) . g $ x
+oo = \f g x -&gt; (f .) $ g x
+oo = \f g x -&gt; (f .) g x
+oo = \f g x -&gt; f . g x
+oo = \f g x y -&gt; f . g x $ y
+oo = \f g x y -&gt; f $ g x y</code></pre>
+<p>or, if you prefer:</p>
+<pre><code>oo = \f g x y -&gt; f (g x y)</code></pre>
+<p>In other words, <code>oo</code> is another kind of pipe: in its first phase it applies a function to two inputs and produces a single output; in the second phase, it applies that output to another function and returns the final result.</p>
+<p>The <code>oo</code> combinator is ubiquitous. We use it all the time in expressions like this:</p>
+<pre><code>concatMap = (concat .) . map
+mapM      = (sequence .) . map</code></pre>
+<p>We might as well get comfy with <code>(f .) . g</code>, and to that end there’s a pretty good explanation <a href="http://stackoverflow.com/questions/20279306/what-does-f-g-mean-in-haskell">here</a>.</p>
+<p>But I’m very excited because <strong>Today I Learned</strong> that <code>oo</code> already has a much nicer name. It’s a <a href="https://hackage.haskell.org/package/data-aviary-0.4.0/docs/Data-Aviary-Birds.html"><code>blackbird</code></a>, so named by logician Raymond Smullyan in his classic puzzle book, <a href="https://en.wikipedia.org/wiki/To_Mock_a_Mockingbird"><em>To Mock a Mockingbird</em></a>:</p>
+<blockquote>
+<p>Smullyan’s exposition takes the form of an imaginary account of going into a forest and discussing the unusual “birds” they find there. Each species of bird in Smullyan’s forest stands for a particular kind of combinator appearing in the conventional treatment of combinatory logic.</p>
+</blockquote>
+<p>So, there:</p>
+<blockquote>
+<p><code>aggregate</code> is a <em>blackbird</em> of <code>sum</code> and <code>map</code>.</p>
+</blockquote>
+<p>Doesn’t that just fill your heart with song? :D</p>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>
