@@ -3,7 +3,8 @@ title: 'Point-Free or Die: Part 1'
 ---
 
 _This is the first post in a series about **tacit programming** and **point-free**
-syntax in Haskell and other languages._
+syntax in Haskell and other languages.
+Be sure to check out [Part 2](/posts/2016-08-28-point-free-part-2.html)!_
 
 For an initial understanding of [tacit programming](https://en.wikipedia.org/wiki/Tacit_programming),
 consider that a synonym for tacit is **quiet** and an antonym is **noisy**.
@@ -20,7 +21,7 @@ Here is an example of a point-ful definition and its point-free equivalent:
 
     lengths ls = map length ls
 
-    lengths = map length
+    lengths = map lengths
 
 They mean the same thing. Both definitions have this type:
 
@@ -31,9 +32,11 @@ of some generic type and returns a list of `Int`. That, is the list of lengths.
 
 With differing syntax, the point-ful and point-free definitions communicate differently:
 
-"`lengths` is a function that maps each foldable structure in a list to its `length`."
+> `lengths` receives a list of items and maps each to its `length`.
 
-vs. "`lengths` is a map of `length`."
+vs.
+
+> `lengths` is a map of `length`.
 
 Consider the succinctness of the second version. It's shorter and quicker to say,
 but understanding it requires that you know how `map` acts on the elements of a list.
@@ -51,7 +54,7 @@ Or you could say:
 
     sum = foldr (+) 0
 
-"`sum` is a right-fold of addition starting from zero."
+> `sum` is a right-fold of addition starting from zero.
 
 When we leave out the `xs`, we communicate at a higher level of abstraction.
 **We are no longer talking about what `sum` does, but what it is:**
